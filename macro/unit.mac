@@ -1,6 +1,11 @@
-# Smoke test run on every push: one event, only generic Geant4 commands.
-# Add your application's commands as needed, keeping it fast.
+# Smoke test run on every push: one 1 keV electron, kept fast.
 /control/verbose 2
 /run/verbose 2
+/run/numberOfThreads 1
+/spower/det/setMat G4_WATER
+/spower/det/setRadius 1 m
+/spower/phys/addPhysics dna_stat_opt2
 /run/initialize
+/gun/particle e-
+/gun/energy 1 keV
 /run/beamOn 1

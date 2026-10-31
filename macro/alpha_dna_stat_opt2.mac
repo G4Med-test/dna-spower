@@ -1,0 +1,66 @@
+# Stopping power of alpha particles, 1 keV to 100 MeV in liquid water with Geant4-DNA
+# dna_stat_opt2 (stationary mode), compared with ICRU 90.
+# Validation macro, run unchanged by the CI (no /control/execute, loops or
+# aliases). One /run/beamOn per energy: Run::EndOfRun appends one line per
+# run to spower.txt, read by validation/parser.py.
+/control/verbose 2
+/run/verbose 1
+/run/numberOfThreads 4
+/random/setSeeds 12345 67890
+#
+/spower/det/setMat G4_WATER
+/spower/det/setRadius 1 m
+/spower/phys/addPhysics dna_stat_opt2
+#
+/run/initialize
+/run/printProgress 0
+#
+/gun/particle alpha
+#
+/gun/energy 1 keV
+/run/beamOn 2000
+#
+/gun/energy 2 keV
+/run/beamOn 2000
+#
+/gun/energy 5 keV
+/run/beamOn 2000
+#
+/gun/energy 10 keV
+/run/beamOn 2000
+#
+/gun/energy 20 keV
+/run/beamOn 2000
+#
+/gun/energy 50 keV
+/run/beamOn 2000
+#
+/gun/energy 100 keV
+/run/beamOn 2000
+#
+/gun/energy 200 keV
+/run/beamOn 2000
+#
+/gun/energy 500 keV
+/run/beamOn 2000
+#
+/gun/energy 1 MeV
+/run/beamOn 2000
+#
+/gun/energy 2 MeV
+/run/beamOn 2000
+#
+/gun/energy 5 MeV
+/run/beamOn 2000
+#
+/gun/energy 10 MeV
+/run/beamOn 2000
+#
+/gun/energy 20 MeV
+/run/beamOn 2000
+#
+/gun/energy 50 MeV
+/run/beamOn 2000
+#
+/gun/energy 100 MeV
+/run/beamOn 2000
