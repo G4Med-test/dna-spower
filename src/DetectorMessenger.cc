@@ -23,6 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file DetectorMessenger.cc
+/// \brief Implementation of the DetectorMessenger class
+
 // This example is provided by the Geant4-DNA collaboration
 // Any report or published results obtained using the Geant4-DNA software
 // shall cite the following Geant4-DNA collaboration publications:
@@ -33,8 +36,6 @@
 //
 // The Geant4-DNA web site is available at http://geant4-dna.org
 //
-/// \file DetectorMessenger.cc
-/// \brief Implementation of the DetectorMessenger class
 
 #include "DetectorMessenger.hh"
 
@@ -83,11 +84,13 @@ DetectorMessenger::~DetectorMessenger()
 
 void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-  if (command == fMaterCmd) {
+  if (command == fMaterCmd)
+  {
     fDetector->SetMaterial(newValue);
   }
 
-  if (command == fRadiusCmd) {
+  if (command == fRadiusCmd)
+  {
     fDetector->SetRadius(fRadiusCmd->GetNewDoubleValue(newValue));
   }
 }
