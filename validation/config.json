@@ -1,7 +1,15 @@
 {
   "macros": [
     "e-_dna_stat_opt2.mac",
+    "e-_dna_stat_opt4.mac",
+    "e-_dna_stat_opt6.mac",
+    "e-_dna_stat_opt8.mac",
     "proton_dna_stat_opt2.mac",
-    "alpha_dna_stat_opt2.mac"
-  ]
+    "proton_dna_stat_opt4.mac",
+    "proton_dna_stat_opt6.mac",
+    "proton_dna_stat_opt8.mac",
+    "alpha_dna_stat_opt2.mac",
+    "alpha_dna_stat_opt4.mac",
+    "alpha_dna_stat_opt6.mac",
+    "alpha_dna_stat_opt8.mac"  ]
 }
