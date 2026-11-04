@@ -1,0 +1,180 @@
+# Stopping power of alpha particles, 100 eV to 400 MeV in liquid water with Geant4-DNA
+# dna_opt8 (stationary mode), compared with ICRU 90.
+# Validation macro, run unchanged by the CI (no /control/execute, loops or
+# aliases). One /run/beamOn per energy: Run::EndOfRun appends one line per
+# run to spower.txt, read by validation/parser.py.
+/control/verbose 2
+/run/verbose 1
+/run/numberOfThreads 4
+/random/setSeeds 12345 67890
+#
+/spower/det/setMat G4_WATER
+/spower/det/setRadius 1 m
+/spower/phys/addPhysics dna_opt8
+#
+/run/initialize
+/run/printProgress 0
+#
+/gun/particle alpha
+#
+/gun/energy 100 eV 
+/run/beamOn 100
+#
+/gun/energy 200 eV
+/run/beamOn 100
+#
+/gun/energy 300 eV 
+/run/beamOn 100
+#
+/gun/energy 400 eV 
+/run/beamOn 100
+#
+/gun/energy 500 eV 
+/run/beamOn 100
+#
+/gun/energy 600 eV 
+/run/beamOn 100
+#
+/gun/energy 700 eV 
+/run/beamOn 100
+#
+/gun/energy 800 eV 
+/run/beamOn 100
+#
+/gun/energy 900 eV 
+/run/beamOn 100
+#
+/gun/energy 0.0010 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0015 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0020 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0030 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0040 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0050 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0060 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0080 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0100 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0150 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0200 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0300 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0400 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0500 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0600 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.0800 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.1000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.1500 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.2000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.3000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.4000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.5000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.6000 MeV 
+/run/beamOn 100
+#
+/gun/energy 0.8000 MeV 
+/run/beamOn 100
+#
+/gun/energy 1.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 1.5000 MeV 
+/run/beamOn 100
+#
+/gun/energy 2.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 3.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 4.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 5.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 6.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 8.0000 MeV 
+/run/beamOn 100
+#
+/gun/energy 10.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 15.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 20.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 30.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 40.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 50.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 60.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 80.0000 MeV
+/run/beamOn 100
+#
+/gun/energy 100.000 MeV
+/run/beamOn 100
+#
+/gun/energy 150.000 MeV
+/run/beamOn 100
+#
+/gun/energy 200.000 MeV
+/run/beamOn 100
+#
+/gun/energy 300.000 MeV
+/run/beamOn 100
+#
+#/gun/energy 400.000 MeV
+#/run/beamOn 100
