@@ -18,7 +18,7 @@ import icru90
 from geantval import energy_mev, getJSON, one_command
 
 TEST = "dna-spower"
-PHYSLISTS = {"dna_stat", "dna_stat_opt2", "dna_stat_opt4", "dna_stat_opt6"}
+PHYSLISTS = {"dna_stat_opt2", "dna_stat_opt4", "dna_stat_opt6", "dna_stat_opt8"}
 DENSITY = 1.0  # g/cm3, G4_WATER
 
 
