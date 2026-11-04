@@ -1,65 +1,81 @@
-"""ICRU Report 90 stopping powers and CSDA ranges of e-, protons and alphas in liquid water.
+"""ICRU 90 tabulated electronic mass stopping powers in liquid water.
 
-Shared by the dna-range and dna-spower parsers (keep the two copies identical).
-Everything is pure Python: energies in MeV, mass stopping powers in MeV cm2/g,
-CSDA ranges in g/cm2.
+All values are embedded directly in this Python module (no external text files).
+Energies are kinetic energies in MeV; stopping powers are in MeV cm2/g.
+The tables are transcribed from the supplied electron/proton/alpha TXT files.
 
-Protons and alphas: electronic stopping power, G4_WATER rows (index 1) of
-G4ICRU90StoppingData, the ICRU 90 table embedded in Geant4 (Geant4 v11.3.2,
-source/materials/src/G4ICRU90StoppingData.cc). The alpha table is in alpha
-kinetic energy. Nuclear stopping is not included: it is below about 1% of the
-electronic stopping above 10 keV for protons and above 100 keV for alphas.
+At tabulated energies the exact table value is returned; between entries,
+log-log interpolation is applied. No extrapolation outside the tables.
 
-Electrons: collision stopping power from the Bethe formula of ICRU Report 37,
-eq. 2.1, with the ICRU 90 mean excitation energy of liquid water, I = 78 eV, and
-the ICRU 90 density-effect correction (EGSnrc water_icru90.density, computed
-with ESTAR.f; zero below 0.5 MeV). This is how ESTAR and ICRU 90 compute it; with
-I = 75 eV the same code reproduces the ESTAR table to 4 digits. Geant4-DNA has no
-bremsstrahlung, so the collision stopping power, not the total, is the right
-reference. The Bethe formula has no shell corrections and becomes less reliable
-at a few keV.
-
-CSDA range: R(T) = R(T0) + integral from T0 to T of dT'/S(T'), with T0 = 1 keV
-(lowest tabulated energy). Below T0 the stopping power is taken proportional to
-the velocity for protons and alphas, R(T0) = 2 T0/S(T0), and constant for
-electrons, R(T0) = T0/S(T0). This estimate, and for ions the missing nuclear
-stopping at low energy, change R by a few percent near the lowest energies only:
-use the ranges from RANGE_MIN_MEV[particle] up.
+CSDA ranges (g/cm2) are numerically integrated from these stopping powers,
+with the original low-energy approximation retained. They are not tabulated
+reference ranges.
 """
 import bisect
 import math
 
-# Kinetic energy (MeV) and electronic mass stopping power (MeV cm2/g).
-PROTON_ENERGY = [
-    0.001, 0.0015, 0.002, 0.003, 0.004, 0.005, 0.006, 0.008, 0.01, 0.015, 0.02, 0.03, 0.04,
-    0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0,
-    6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0, 50.0, 60.0, 80.0, 100.0, 150.0, 200.0, 300.0,
-    400.0, 500.0, 600.0, 800.0, 1000.0, 1500.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0,
-    8000.0, 10000.0]
-PROTON_STOPPING = [
-    133.7, 163.8, 189.1, 231.6, 267.5, 299.0, 327.6, 378.2, 422.9, 503.6, 567.3, 662.8, 729.0,
-    774.0, 802.6, 824.1, 814.5, 736.0, 658.5, 543.5, 464.3, 406.5, 362.4, 299.7, 257.4, 193.4,
-    156.9, 116.0, 93.19, 78.42, 68.01, 54.17, 45.32, 32.69, 25.89, 18.64, 14.79, 12.38, 10.72,
-    8.578, 7.25, 5.417, 4.47, 3.504, 3.018, 2.731, 2.544, 2.323, 2.203, 2.065, 2.017, 1.998,
-    2.01, 2.029, 2.05, 2.09, 2.124]
-ALPHA_ENERGY = PROTON_ENERGY[:49]
-ALPHA_STOPPING = [
-    98.91, 122.8, 143.1, 177.6, 206.9, 233.0, 256.8, 299.3, 337.0, 418.1, 487.1, 603.9, 703.0,
-    790.5, 869.6, 1009.0, 1131.0, 1383.0, 1582.0, 1873.0, 2062.0, 2178.0, 2240.0, 2256.0,
-    2190.0, 1877.0, 1599.0, 1239.0, 1021.0, 874.7, 768.7, 623.9, 529.0, 389.4, 311.8, 226.7,
-    180.2, 150.6, 130.0, 103.0, 85.93, 61.94, 49.23, 35.86, 28.85, 24.52, 21.56, 17.8, 15.5]
+# Tables embedded from the three supplied ICRU90 files.
+ELECTRON_ENERGY = [
+    0.0010, 0.0015, 0.0020, 0.0030, 0.0040, 0.0050, 0.0060, 0.0080,
+    0.0100, 0.0150, 0.0200, 0.0300, 0.0400, 0.0500, 0.0600, 0.0800,
+    0.1000, 0.1500, 0.2000, 0.3000, 0.4000, 0.5000, 0.6000, 0.8000,
+    1.0000, 1.5000, 2.0000, 3.0000, 4.0000, 5.0000, 6.0000, 8.0000,
+    10.0000, 15.0000, 20.0000, 30.0000, 40.0000, 50.0000, 60.0000, 80.0000,
+    100.0000, 150.0000, 200.0000, 300.0000, 400.0000, 500.0000, 600.0000, 800.0000,
+    1000.0000,
+]
 
-# Electrons: Bethe formula constants and density-effect correction delta(T).
-K = 0.307075             # 4 pi N_A r_e^2 m_e c^2, MeV cm2/mol
-ELECTRON_MASS = 0.51099895  # MeV
-Z_OVER_A = 10 / 18.0153  # mol/g, H2O
-I_WATER = 78e-6          # MeV, ICRU 90
-ELECTRON_MAX = 10.0      # MeV, end of the density-effect table below
-DELTA_ENERGY = [0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0,
-                4.5, 5.0, 5.5, 6.0, 7.0, 8.0, 9.0, 10.0]
-DELTA = [0.0, 6.126e-4, 1.501e-2, 5.338e-2, 1.005e-1, 1.529e-1, 2.086e-1, 3.535e-1, 4.982e-1,
-         6.377e-1, 7.704e-1, 1.014, 1.231, 1.426, 1.601, 1.760, 1.906, 2.041, 2.165, 2.390,
-         2.589, 2.767, 2.928]
+ELECTRON_STOPPING = [
+    1.181E+02, 9.063E+01, 7.436E+01, 5.563E+01, 4.500E+01, 3.806E+01, 3.315E+01, 2.659E+01,
+    2.239E+01, 1.635E+01, 1.308E+01, 9.591E+00, 7.729E+00, 6.564E+00, 5.763E+00, 4.731E+00,
+    4.093E+00, 3.221E+00, 2.779E+00, 2.344E+00, 2.138E+00, 2.025E+00, 1.956E+00, 1.880E+00,
+    1.845E+00, 1.819E+00, 1.821E+00, 1.844E+00, 1.869E+00, 1.891E+00, 1.910E+00, 1.942E+00,
+    1.967E+00, 2.013E+00, 2.045E+00, 2.088E+00, 2.117E+00, 2.139E+00, 2.156E+00, 2.182E+00,
+    2.202E+00, 2.238E+00, 2.263E+00, 2.298E+00, 2.322E+00, 2.341E+00, 2.357E+00, 2.382E+00,
+    2.401E+00,
+]
+
+PROTON_ENERGY = [
+    0.0010, 0.0015, 0.0020, 0.0030, 0.0040, 0.0050, 0.0060, 0.0080,
+    0.0100, 0.0150, 0.0200, 0.0300, 0.0400, 0.0500, 0.0600, 0.0800,
+    0.1000, 0.1500, 0.2000, 0.3000, 0.4000, 0.5000, 0.6000, 0.8000,
+    1.0000, 1.5000, 2.0000, 3.0000, 4.0000, 5.0000, 6.0000, 8.0000,
+    10.0000, 15.0000, 20.0000, 30.0000, 40.0000, 50.0000, 60.0000, 80.0000,
+    100.0000, 150.0000, 200.0000, 300.0000, 400.0000, 500.0000, 600.0000, 800.0000,
+    1000.0000, 1500.0000, 2000.0000, 3000.0000, 4000.0000, 5000.0000, 6000.0000, 8000.0000,
+    10000.0000,
+]
+
+PROTON_STOPPING = [
+    1.337E+02, 1.638E+02, 1.891E+02, 2.316E+02, 2.675E+02, 2.990E+02, 3.276E+02, 3.782E+02,
+    4.229E+02, 5.036E+02, 5.673E+02, 6.628E+02, 7.290E+02, 7.740E+02, 8.026E+02, 8.241E+02,
+    8.145E+02, 7.360E+02, 6.585E+02, 5.435E+02, 4.643E+02, 4.065E+02, 3.624E+02, 2.997E+02,
+    2.574E+02, 1.934E+02, 1.569E+02, 1.160E+02, 9.319E+01, 7.842E+01, 6.801E+01, 5.417E+01,
+    4.532E+01, 3.269E+01, 2.589E+01, 1.864E+01, 1.479E+01, 1.238E+01, 1.072E+01, 8.578E+00,
+    7.250E+00, 5.417E+00, 4.470E+00, 3.504E+00, 3.018E+00, 2.731E+00, 2.544E+00, 2.323E+00,
+    2.203E+00, 2.065E+00, 2.017E+00, 1.998E+00, 2.010E+00, 2.029E+00, 2.050E+00, 2.090E+00,
+    2.124E+00,
+]
+
+ALPHA_ENERGY = [
+    0.0010, 0.0015, 0.0020, 0.0030, 0.0040, 0.0050, 0.0060, 0.0080,
+    0.0100, 0.0150, 0.0200, 0.0300, 0.0400, 0.0500, 0.0600, 0.0800,
+    0.1000, 0.1500, 0.2000, 0.3000, 0.4000, 0.5000, 0.6000, 0.8000,
+    1.0000, 1.5000, 2.0000, 3.0000, 4.0000, 5.0000, 6.0000, 8.0000,
+    10.0000, 15.0000, 20.0000, 30.0000, 40.0000, 50.0000, 60.0000, 80.0000,
+    100.0000, 150.0000, 200.0000, 300.0000, 400.0000, 500.0000, 600.0000, 800.0000,
+    1000.0000,
+]
+
+ALPHA_STOPPING = [
+    9.891E+01, 1.228E+02, 1.431E+02, 1.776E+02, 2.069E+02, 2.330E+02, 2.568E+02, 2.993E+02,
+    3.370E+02, 4.181E+02, 4.871E+02, 6.039E+02, 7.030E+02, 7.905E+02, 8.696E+02, 1.009E+03,
+    1.131E+03, 1.383E+03, 1.582E+03, 1.873E+03, 2.062E+03, 2.178E+03, 2.240E+03, 2.256E+03,
+    2.190E+03, 1.877E+03, 1.599E+03, 1.239E+03, 1.021E+03, 8.747E+02, 7.687E+02, 6.239E+02,
+    5.290E+02, 3.894E+02, 3.118E+02, 2.267E+02, 1.802E+02, 1.506E+02, 1.300E+02, 1.030E+02,
+    8.593E+01, 6.194E+01, 4.923E+01, 3.586E+01, 2.885E+01, 2.452E+01, 2.156E+01, 1.780E+01,
+    1.550E+01,
+]
 
 T0 = 0.001               # MeV, lowest energy of every table
 RANGE_MIN_MEV = {"e-": 0.01, "proton": 0.1, "alpha": 0.5}  # CSDA ranges reliable from here up
@@ -72,26 +88,20 @@ def _interpolate(x, xs, ys, log=True):
     """Interpolation in a table, log-log (stopping powers) or linear."""
     i = min(max(bisect.bisect_right(xs, x) - 1, 0), len(xs) - 2)
     x0, x1, y0, y1 = xs[i], xs[i + 1], ys[i], ys[i + 1]
+    if x == x0:
+        return y0
+    if x == x1:
+        return y1
     if log:
         f = math.log(x / x0) / math.log(x1 / x0)
         return y0 * (y1 / y0) ** f
     return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
 
 
-def _electron_stopping(energy):
-    tau = energy / ELECTRON_MASS
-    gamma = tau + 1
-    beta2 = 1 - 1 / gamma ** 2
-    f_minus = 1 - beta2 + (tau ** 2 / 8 - (2 * tau + 1) * math.log(2)) / gamma ** 2
-    delta = _interpolate(energy, DELTA_ENERGY, DELTA, log=False) if energy > DELTA_ENERGY[0] else 0.0
-    return (K / 2 * Z_OVER_A / beta2
-            * (math.log(tau ** 2 * (tau + 2) / (2 * (I_WATER / ELECTRON_MASS) ** 2)) + f_minus - delta))
-
-
 def energy_limits(particle):
     """Energy range (MeV) of the reference for this particle."""
     if particle == "e-":
-        return T0, ELECTRON_MAX
+        return ELECTRON_ENERGY[0], ELECTRON_ENERGY[-1]
     if particle == "proton":
         return PROTON_ENERGY[0], PROTON_ENERGY[-1]
     if particle == "alpha":
@@ -109,7 +119,7 @@ def stopping_power(particle, energy):
     if not covers(particle, energy):
         raise ValueError("%g MeV is outside the ICRU 90 table for %s" % (energy, particle))
     if particle == "e-":
-        return _electron_stopping(energy)
+        return _interpolate(energy, ELECTRON_ENERGY, ELECTRON_STOPPING)
     if particle == "proton":
         return _interpolate(energy, PROTON_ENERGY, PROTON_STOPPING)
     return _interpolate(energy, ALPHA_ENERGY, ALPHA_STOPPING)
