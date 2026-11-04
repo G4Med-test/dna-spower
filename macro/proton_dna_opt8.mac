@@ -10,7 +10,7 @@
 #
 /spower/det/setMat G4_WATER
 /spower/det/setRadius 1 m
-/spower/phys/addPhysics dna_opt2
+/spower/phys/addPhysics dna_opt8
 #
 /run/initialize
 /run/printProgress 0
