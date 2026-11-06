@@ -23,6 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file SteppingVerbose.cc
+/// \brief Implementation of the SteppingVerbose class
+
 // This example is provided by the Geant4-DNA collaboration
 // Any report or published results obtained using the Geant4-DNA software
 // shall cite the following Geant4-DNA collaboration publications:
@@ -33,8 +36,6 @@
 //
 // The Geant4-DNA web site is available at http://geant4-dna.org
 //
-/// \file SteppingVerbose.cc
-/// \brief Implementation of the SteppingVerbose class
 
 #include "SteppingVerbose.hh"
 
@@ -57,7 +58,8 @@ void SteppingVerbose::TrackingStarted()
   G4int prec = G4cout.precision(3);
 
   // Step zero
-  if (verboseLevel > 0) {
+  if (verboseLevel > 0)
+  {
     G4cout << std::setw(5) << "Step#"
            << " " << std::setw(6) << "X"
            << "    " << std::setw(6) << "Y"
@@ -89,9 +91,11 @@ void SteppingVerbose::StepInfo()
 
   G4int prec = G4cout.precision(3);
 
-  if (verboseLevel >= 1) {
+  if (verboseLevel >= 1)
+  {
     if (verboseLevel >= 4) VerboseTrack();
-    if (verboseLevel >= 3) {
+    if (verboseLevel >= 3)
+    {
       G4cout << G4endl;
       G4cout << std::setw(5) << "#Step#"
              << " " << std::setw(6) << "X"
@@ -121,13 +125,16 @@ void SteppingVerbose::StepInfo()
     G4cout << "   " << std::setw(10) << procName;
     G4cout << G4endl;
 
-    if (verboseLevel == 2) {
+    if (verboseLevel == 2)
+    {
       const std::vector<const G4Track*>* secondary = fStep->GetSecondaryInCurrentStep();
       size_t nbtrk = (*secondary).size();
-      if (nbtrk) {
+      if (nbtrk)
+      {
         G4cout << "\n    :----- List of secondaries ----------------" << G4endl;
         G4cout.precision(4);
-        for (size_t lp = 0; lp < (*secondary).size(); lp++) {
+        for (size_t lp = 0; lp < (*secondary).size(); lp++)
+        {
           G4cout << "   " << std::setw(13) << (*secondary)[lp]->GetDefinition()->GetParticleName()
                  << ":  energy =" << std::setw(6)
                  << G4BestUnit((*secondary)[lp]->GetKineticEnergy(), "Energy")

@@ -5,7 +5,7 @@
 # particle, one energy per run): energy (eV), mean stopping power (keV/um) and
 # its standard deviation over the events (keV/um).
 #
-# The stopping power is computed in stationary mode (G4EmDNAPhysics_stationary*):
+# The stopping power is computed in stationary mode (G4EmDNAPhysicsionary*):
 # the primary does not lose energy, and SteppingAction aborts each event after
 # 1000 steps (e-, protons) or 10000 steps (alphas) and scores
 # energy deposited / path length. It is compared with the ICRU 90 stopping power
@@ -18,7 +18,7 @@ import icru90
 from geantval import energy_mev, getJSON, one_command
 
 TEST = "dna-spower"
-PHYSLISTS = {"dna_stat", "dna_stat_opt2", "dna_stat_opt4", "dna_stat_opt6"}
+PHYSLISTS = {"dna_opt2", "dna_opt4", "dna_opt6", "dna_opt8"}
 DENSITY = 1.0  # g/cm3, G4_WATER
 
 

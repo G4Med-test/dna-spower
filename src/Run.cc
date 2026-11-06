@@ -23,6 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file Run.cc
+/// \brief Implementation of the Run class
+
 // This example is provided by the Geant4-DNA collaboration
 // Any report or published results obtained using the Geant4-DNA software
 // shall cite the following Geant4-DNA collaboration publications:
@@ -33,8 +36,6 @@
 //
 // The Geant4-DNA web site is available at http://geant4-dna.org
 //
-/// \file Run.cc
-/// \brief Implementation of the Run class
 
 #include "Run.hh"
 
@@ -107,7 +108,8 @@ void Run::EndOfRun()
          << G4BestUnit(fDetector->GetAbsorRadius(), "Length") << "of " << material->GetName()
          << " (density: " << G4BestUnit(density, "Volumic Mass") << ")" << G4endl;
 
-  if (numberOfEvent == 0) {
+  if (numberOfEvent == 0)
+  {
     G4cout.setf(mode, std::ios::floatfield);
     G4cout.precision(prec);
     return;

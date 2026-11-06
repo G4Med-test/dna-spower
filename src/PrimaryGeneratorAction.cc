@@ -23,6 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file PrimaryGeneratorAction.cc
+/// \brief Implementation of the PrimaryGeneratorAction class
+
 // This example is provided by the Geant4-DNA collaboration
 // Any report or published results obtained using the Geant4-DNA software
 // shall cite the following Geant4-DNA collaboration publications:
@@ -33,8 +36,6 @@
 //
 // The Geant4-DNA web site is available at http://geant4-dna.org
 //
-/// \file PrimaryGeneratorAction.cc
-/// \brief Implementation of the PrimaryGeneratorAction class
 
 #include "PrimaryGeneratorAction.hh"
 
@@ -75,7 +76,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 G4bool PrimaryGeneratorAction::Notify(G4ApplicationState requestedState)
 {
-  if (requestedState == G4State_Idle) {
+  if (requestedState == G4State_Idle)
+  {
     if (fParticleGun != 0) return true;
 
     fParticleGun = new G4ParticleGun(1);

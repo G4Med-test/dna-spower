@@ -10,7 +10,7 @@ Built on the Geant4 example
 ## 🔬 What this test does
 
 Mono-energetic particles start at the centre of a 1 m radius sphere of
-`G4_WATER`, in a random direction. The `G4EmDNAPhysics_stationary*` constructors
+`G4_WATER`, in a random direction. The `G4EmDNAPhysics*` constructors are used in stationary mode
 keep the primary energy constant; `SteppingAction` kills secondary electrons and
 photons, and after 1000 steps (e-, protons and H) or 10000 steps (alphas and
 their charge states) scores energy deposited / path length and ends the event.
@@ -19,9 +19,18 @@ For each energy the application writes to `spower.txt` the mean stopping power
 
 | Macro | Particle | Physics | Energies | Events per energy |
 | --- | --- | --- | --- | --- |
-| `e-_dna_stat_opt2.mac` | e- | `dna_stat_opt2` | 50 eV – 1 MeV | 2000 |
-| `proton_dna_stat_opt2.mac` | proton | `dna_stat_opt2` | 1 keV – 50 MeV | 2000 |
-| `alpha_dna_stat_opt2.mac` | alpha | `dna_stat_opt2` | 1 keV – 100 MeV | 2000 |
+| `e-_dna_opt2.mac` | e- | `dna_opt2` | 10 eV – 1 MeV | 10000 |
+| `e-_dna_opt4.mac` | e- | `dna_opt4` | 10 eV – 10 MeV | 10000 |
+| `e-_dna_opt6.mac` | e- | `dna_opt6` | 10 eV – 1 MeV | 10000 |
+| `e-_dna_opt8.mac` | e- | `dna_opt8` | 10 eV – 1 MeV | 10000 |
+| `proton_dna_opt2.mac` | proton | `dna_opt2` | 100 eV – 300 MeV | 1000 |
+| `proton_dna_opt4.mac` | proton | `dna_opt4` | 100 eV – 300 MeV | 1000 |
+| `proton_dna_opt6.mac` | proton | `dna_opt6` | 100 eV – 300 MeV | 1000 |
+| `proton_dna_opt8.mac` | proton | `dna_opt8` | 100 eV – 300 MeV | 1000 |
+| `alpha_dna_opt2.mac` | alpha | `dna_opt2` | 100 eV – 400 MeV | 100 |
+| `alpha_dna_opt4.mac` | alpha | `dna_opt4` | 100 eV – 400 MeV | 100 |
+| `alpha_dna_opt6.mac` | alpha | `dna_opt6` | 100 eV – 400 MeV | 100 |
+| `alpha_dna_opt8.mac` | alpha | `dna_opt8` | 100 eV – 400 MeV | 100 |
 
 `validation/parser.py` publishes one plot per particle (x: energy in MeV, y:
 stopping power in keV/µm, error: standard deviation / √N) with the **ICRU 90**
@@ -30,27 +39,14 @@ the `G4_WATER` density of 1 g/cm³.
 
 ## 📚 Reference: ICRU 90
 
-`validation/icru90.py` (identical in `dna-range`):
-
-- **protons, alphas**: electronic stopping power of `G4_WATER` from
-  `G4ICRU90StoppingData` (the ICRU 90 table embedded in Geant4,
-  `source/materials/src/G4ICRU90StoppingData.cc`, 1 keV – 10 GeV for protons,
-  1 keV – 1 GeV for alphas), log-log interpolated. Nuclear stopping is not
-  included: it exceeds about 1% of the electronic stopping below 10 keV
-  (protons) and 100 keV (alphas).
-- **electrons**: collision stopping power from the Bethe formula (ICRU 37
-  eq. 2.1) with the ICRU 90 mean excitation energy I = 78 eV and density-effect
-  correction (zero below 0.5 MeV), as ESTAR computes it (with I = 75 eV it
-  reproduces ESTAR to 4 digits). Geant4-DNA has no bremsstrahlung, so the
-  collision, not the total, stopping power is the right reference. The Bethe
-  formula has no shell corrections and becomes less reliable at a few keV.
+`validation/icru90.py` returns the tabulated ICRU90 range values.
 
 ## Import notes
 
 - `main.cc`, `include/`, `src/` are `spower.cc`, `include/` and `src/` of the
   Geant4 v11.3.2 example (the version of the default base image), unchanged.
 - `macro/spower.in` is the example's macro, kept for reference; the validation
-  macros are the `*_dna_stat_opt2.mac` files listed in `validation/config.json`.
+  macros are the `*_dna_opt2.mac` files listed in `validation/config.json`.
   `docs/geant4-example-README.txt` is the example's README.
 - `macro/unit.mac` runs one 1 keV electron on every push.
 
